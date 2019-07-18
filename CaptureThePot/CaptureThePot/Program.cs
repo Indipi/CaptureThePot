@@ -71,10 +71,7 @@ namespace CaptureThePot
             // FindArea function return temporary variable
             int temporaryArea = 0;
 
-            // Brute force method. Test every value including for final player. We could caculate the best position for the final player but, while it would 
-            // be faster, it is also less simple to write (takes longer, more complex, and thus more likely I, the programmer will make a mistake.) 
-            // As a rule the first iteration of any completely new code (especially for tricky problems) should be kept as simple as possible and once it works then 
-            // it can be made faster. We are only doing 4 interations deep here at the moment anyway so speed is not an issue here.
+            // Brute force method. Test every value including for final player. 
 
             // For each player keep track of the best value
             // Compare new value after position assignment and overwrite if better.
@@ -141,7 +138,7 @@ namespace CaptureThePot
                             else if(temporaryArea == LocalAreaCapturedD)
                             {
                                 //multiple best positions
-                                // AAAAAAHHHHH
+                                // AAAAAAHHHH
                                 //TODO
                             }
 
