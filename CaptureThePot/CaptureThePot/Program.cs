@@ -49,7 +49,7 @@ namespace CaptureThePot
             int NumberOfBestAPositions = 1;
             int RowsA = 1;
 
-            for (A_position = 0; A_position <= 100; A_position++)
+            for (A_position = 0; A_position <= 50; A_position++)
             {
                 int bestBArea = 0;
                 int[,] BestBPositionArray = new int[10000, 9];
@@ -168,21 +168,18 @@ namespace CaptureThePot
                         else if (areaC == bestCArea)
                         {
                             // Multiple Best Positions
-                            for (int i = RowsC; i < NumberOfBestCPositions; i++)
+                            for (int i = 0; i < NumberOfBestDPositions; i++)
                             {
-                                for(int j = 0; j < NumberOfBestDPositions; j++)
-                                {
-                                    BestCPositionArray[i + j, INDEX_Row] = i + 1;
-                                    BestCPositionArray[i + j, INDEX_APos] = BestDPositionArray[j, INDEX_APos];
-                                    BestCPositionArray[i + j, INDEX_BPos] = BestDPositionArray[j, INDEX_BPos];
-                                    BestCPositionArray[i + j, INDEX_CPos] = BestDPositionArray[j, INDEX_CPos];
-                                    BestCPositionArray[i + j, INDEX_DPos] = BestDPositionArray[j, INDEX_DPos];
-                                    BestCPositionArray[i + j, INDEX_AreaA] = BestDPositionArray[j, INDEX_AreaA];
-                                    BestCPositionArray[i + j, INDEX_AreaB] = BestDPositionArray[j, INDEX_AreaB];
-                                    BestCPositionArray[i + j, INDEX_AreaC] = BestDPositionArray[j, INDEX_AreaC];
-                                    BestCPositionArray[i + j, INDEX_AreaD] = BestDPositionArray[j, INDEX_AreaD];
-                                    RowsC = RowsC + 1;
-                                }
+                                BestCPositionArray[RowsC, INDEX_Row] = RowsC;
+                                BestCPositionArray[RowsC, INDEX_APos] = BestDPositionArray[i, INDEX_APos];
+                                BestCPositionArray[RowsC, INDEX_BPos] = BestDPositionArray[i, INDEX_BPos];
+                                BestCPositionArray[RowsC, INDEX_CPos] = BestDPositionArray[i, INDEX_CPos];
+                                BestCPositionArray[RowsC, INDEX_DPos] = BestDPositionArray[i, INDEX_DPos];
+                                BestCPositionArray[RowsC, INDEX_AreaA] = BestDPositionArray[i, INDEX_AreaA];
+                                BestCPositionArray[RowsC, INDEX_AreaB] = BestDPositionArray[i, INDEX_AreaB];
+                                BestCPositionArray[RowsC, INDEX_AreaC] = BestDPositionArray[i, INDEX_AreaC];
+                                BestCPositionArray[RowsC, INDEX_AreaD] = BestDPositionArray[i, INDEX_AreaD];
+                                RowsC = RowsC + 1;
                                 
                             }
                             NumberOfBestCPositions = NumberOfBestCPositions + 1;
@@ -224,21 +221,18 @@ namespace CaptureThePot
                     else if (areaB == bestBArea)
                     {
                         // Multiple Best Positions
-                        for (int i = RowsB; i < NumberOfBestBPositions; i++)
+                        for (int i = 0; i < NumberOfBestCPositions; i++)
                         {
-                            for (int j = 0; j < NumberOfBestCPositions; j++)
-                            {
-                                BestBPositionArray[i + j, INDEX_Row] = i + 1;
-                                BestBPositionArray[i + j, INDEX_APos] = BestCPositionArray[j, INDEX_APos];
-                                BestBPositionArray[i + j, INDEX_BPos] = BestCPositionArray[j, INDEX_BPos];
-                                BestBPositionArray[i + j, INDEX_CPos] = BestCPositionArray[j, INDEX_CPos];
-                                BestBPositionArray[i + j, INDEX_DPos] = BestCPositionArray[j, INDEX_DPos];
-                                BestBPositionArray[i + j, INDEX_AreaA] = BestCPositionArray[j, INDEX_AreaA];
-                                BestBPositionArray[i + j, INDEX_AreaB] = BestCPositionArray[j, INDEX_AreaB];
-                                BestBPositionArray[i + j, INDEX_AreaC] = BestCPositionArray[j, INDEX_AreaC];
-                                BestBPositionArray[i + j, INDEX_AreaD] = BestCPositionArray[j, INDEX_AreaD];
-                                RowsB = RowsB + 1;
-                            }
+                            BestBPositionArray[RowsB, INDEX_Row] = RowsB;
+                            BestBPositionArray[RowsB, INDEX_APos] = BestCPositionArray[i, INDEX_APos];
+                            BestBPositionArray[RowsB, INDEX_BPos] = BestCPositionArray[i, INDEX_BPos];
+                            BestBPositionArray[RowsB, INDEX_CPos] = BestCPositionArray[i, INDEX_CPos];
+                            BestBPositionArray[RowsB, INDEX_DPos] = BestCPositionArray[i, INDEX_DPos];
+                            BestBPositionArray[RowsB, INDEX_AreaA] = BestCPositionArray[i, INDEX_AreaA];
+                            BestBPositionArray[RowsB, INDEX_AreaB] = BestCPositionArray[i, INDEX_AreaB];
+                            BestBPositionArray[RowsB, INDEX_AreaC] = BestCPositionArray[i, INDEX_AreaC];
+                            BestBPositionArray[RowsB, INDEX_AreaD] = BestCPositionArray[i, INDEX_AreaD];
+                            RowsB = RowsB + 1;
 
                         }
                         NumberOfBestBPositions = NumberOfBestBPositions + 1;
@@ -280,21 +274,19 @@ namespace CaptureThePot
                 else if (areaA == bestAArea)
                 {
                     // Multiple Best Positions
-                    for (int i = RowsA; i < NumberOfBestAPositions; i++)
+                    // Multiple Best Positions
+                    for (int i = 0; i < NumberOfBestBPositions; i++)
                     {
-                        for (int j = 0; j < NumberOfBestBPositions; j++)
-                        {
-                            BestAPositionArray[i + j, INDEX_Row] = i + 1;
-                            BestAPositionArray[i + j, INDEX_APos] = BestBPositionArray[j, INDEX_APos];
-                            BestAPositionArray[i + j, INDEX_BPos] = BestBPositionArray[j, INDEX_BPos];
-                            BestAPositionArray[i + j, INDEX_CPos] = BestBPositionArray[j, INDEX_CPos];
-                            BestAPositionArray[i + j, INDEX_DPos] = BestBPositionArray[j, INDEX_DPos];
-                            BestAPositionArray[i + j, INDEX_AreaA] = BestBPositionArray[j, INDEX_AreaA];
-                            BestAPositionArray[i + j, INDEX_AreaB] = BestBPositionArray[j, INDEX_AreaB];
-                            BestAPositionArray[i + j, INDEX_AreaC] = BestBPositionArray[j, INDEX_AreaC];
-                            BestAPositionArray[i + j, INDEX_AreaD] = BestBPositionArray[j, INDEX_AreaD];
-                            RowsA = RowsA + 1;
-                        }
+                        BestAPositionArray[RowsA, INDEX_Row] = RowsA;
+                        BestAPositionArray[RowsA, INDEX_APos] = BestBPositionArray[i, INDEX_APos];
+                        BestAPositionArray[RowsA, INDEX_BPos] = BestBPositionArray[i, INDEX_BPos];
+                        BestAPositionArray[RowsA, INDEX_CPos] = BestBPositionArray[i, INDEX_CPos];
+                        BestAPositionArray[RowsA, INDEX_DPos] = BestBPositionArray[i, INDEX_DPos];
+                        BestAPositionArray[RowsA, INDEX_AreaA] = BestBPositionArray[i, INDEX_AreaA];
+                        BestAPositionArray[RowsA, INDEX_AreaB] = BestBPositionArray[i, INDEX_AreaB];
+                        BestAPositionArray[RowsA, INDEX_AreaC] = BestBPositionArray[i, INDEX_AreaC];
+                        BestAPositionArray[RowsA, INDEX_AreaD] = BestBPositionArray[i, INDEX_AreaD];
+                        RowsA = RowsA + 1;
 
                     }
                     NumberOfBestAPositions = NumberOfBestAPositions + 1;
@@ -311,8 +303,8 @@ namespace CaptureThePot
                 Console.Write("With an expected captured area of: ");
                 Console.WriteLine(BestAPositionArray[0, INDEX_AreaA]);
             }
-            //else
-            //{
+            else
+            {
                 Console.Write("Printing all possible best positions...");
                 Console.WriteLine(RowsA);
                 for (int i = 0; i < RowsA; i++)
@@ -338,7 +330,7 @@ namespace CaptureThePot
 
                     Console.WriteLine("\n");
                 }
-            //}
+            }
 
         }
 
