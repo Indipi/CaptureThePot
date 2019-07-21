@@ -24,212 +24,322 @@ namespace CaptureThePot
 
             // for 4 players using a resolution of 0 to 100 should be sufficient
 
-            int A_pos = 0; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
-            int B_pos = 0; // position of B, number between 0 - 100
-            int C_pos = 0; // position of C, number between 0 - 100
-            int D_pos = 0; // position of D, number between 0 - 100
+            int A_position = 0; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
+            int B_position = 0; // position of B, number between 0 - 100
+            int C_position = 0; // position of C, number between 0 - 100
+            int D_position = 0; // position of D, number between 0 - 100
 
-            // Positions of each player for the current best capture for A
-            int bestAPos = 0;
-            int bestBPos = 0;
-            int bestCPos = 0;
-            int bestDPos = 0;
+            int areaA = 0;
+            int areaB = 0;
+            int areaC = 0;
+            int areaD = 0;
 
-            // The area captured by each player for the optimal position of A
-            int areaCapturedA = 0;
-            int areaCapturedB = 0;
-            int areaCapturedC = 0;
-            int areaCapturedD = 0;
+            const int INDEX_Row = 0;
+            const int INDEX_APos = 1;
+            const int INDEX_BPos = 2;
+            const int INDEX_CPos = 3;
+            const int INDEX_DPos = 4;
+            const int INDEX_AreaA = 5;
+            const int INDEX_AreaB = 6;
+            const int INDEX_AreaC = 7;
+            const int INDEX_AreaD = 8;
 
+            int bestAArea = 0;
+            int[,] BestAPositionArray = new int[1000, 9];
+            int NumberOfBestAPositions = 1;
+            int RowsA = 1;
 
-            // Positions of each later player for the current best capture for B ( for a given A)
-            int bestCPosLevel2 = 0;
-            int bestDPosLevel2 = 0;
-
-            // The area captured by each later player for the optimal position of B (for a given A)
-            int areaCapturedCLevel2 = 0;
-            int areaCapturedDLevel2 = 0;
-
-            // Positions of each later player for the current best capture for C ( for a given A, B)
-            int bestDPosLevel3 = 0;
-
-            // The area captured by each later player for the optimal position of C (for a given A, B)
-            int areaCapturedDLevel3 = 0;
-
-
-            // Best positions for each player for given current positions of previous players
-            int LocalBestBPos = 0;
-            int LocalBestCPos = 0;
-            int LocalBestDPos = 0;
-
-            // The area captured for the optimal position of current player given previous player positions
-            int LocalAreaCapturedB = 0;
-            int LocalAreaCapturedC = 0;
-            int LocalAreaCapturedD = 0;
-
-
-            // FindArea function return temporary variable
-            int temporaryArea = 0;
-
-            // Brute force method. Test every value including for final player. 
-
-            // For each player keep track of the best value
-            // Compare new value after position assignment and overwrite if better.
-
-            // So for example ... for a given value of A we find the best values for B, C, D
-            // then after their loops (before end of A loop) we check the captured area for A
-            // If it's better than the current best area for A then we make it the new best area
-            for (A_pos = 0; A_pos <= 50; A_pos++)
+            for (A_position = 0; A_position <= 100; A_position++)
             {
-                LocalBestBPos = 0;
-                LocalAreaCapturedB = 0;
-                bestCPosLevel2 = 0;
-                areaCapturedCLevel2 = 0;
-                bestDPosLevel2 = 0;
-                areaCapturedDLevel2 = 0;
-                //The following nested loops select the best B, C, D for this A
-                for (B_pos = 0; B_pos <= 100; B_pos++)
+                int bestBArea = 0;
+                int[,] BestBPositionArray = new int[10000, 9];
+                int NumberOfBestBPositions = 1;
+                int RowsB = 1;
+
+                for (B_position = 0; B_position <= 100; B_position++)
                 {
-                    if (B_pos == A_pos)
+                    if (B_position == A_position)
                     {
                         continue;
                     }
 
-                    LocalBestCPos = 0;
-                    LocalAreaCapturedC = 0;
-                    areaCapturedDLevel3 = 0;
-                    bestDPosLevel3 = 0;
-                    for (C_pos = 0; C_pos <=100; C_pos++)
+                    int bestCArea = 0;
+                    int[,] BestCPositionArray = new int[1000, 9];
+                    int NumberOfBestCPositions = 1;
+                    int RowsC = 1;
+
+                    for (C_position = 0; C_position <= 100; C_position++)
                     {
-                        if (C_pos == A_pos)
+                        if (C_position == A_position)
                         {
                             continue;
                         }
-                        if (C_pos == B_pos)
+                        if (C_position == B_position)
                         {
                             continue;
                         }
 
-                        LocalBestDPos = 0;
-                        LocalAreaCapturedD = 0;
-                        for (D_pos = 0; D_pos <= 100; D_pos++)
+                        int bestDArea = 0;
+                        int[,] BestDPositionArray = new int[101, 9];
+                        int NumberOfBestDPositions = 1;
+
+                        for (D_position = 0; D_position <= 100; D_position++)
                         {
-                            if (D_pos == A_pos)
+                            if (D_position == A_position)
                             {
                                 continue;
                             }
-                            if (D_pos == B_pos)
+                            if (D_position == B_position)
                             {
                                 continue;
                             }
-                            if (D_pos == C_pos)
+                            if (D_position == C_position)
                             {
                                 continue;
                             }
 
-                            // Given the A, B, C, D, positions find the captured area for D
-                            temporaryArea = FindArea(4, A_pos, B_pos, C_pos, D_pos);
+                            areaA = FindArea(1, A_position, B_position, C_position, D_position);
+                            areaB = FindArea(2, A_position, B_position, C_position, D_position);
+                            areaC = FindArea(3, A_position, B_position, C_position, D_position);
+                            areaD = FindArea(4, A_position, B_position, C_position, D_position);
 
-                            if(temporaryArea > LocalAreaCapturedD)
+                            if (areaD > bestDArea)
                             {
-                                LocalAreaCapturedD = temporaryArea;
-                                LocalBestDPos = D_pos;
+                                Array.Clear(BestDPositionArray, 0, BestDPositionArray.Length);
+                                NumberOfBestDPositions = 1;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_Row] = NumberOfBestDPositions;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_APos] = A_position;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_BPos] = B_position;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_CPos] = C_position;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_DPos] = D_position;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_AreaA] = areaA;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_AreaB] = areaB;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_AreaC] = areaC;
+                                BestDPositionArray[NumberOfBestDPositions - 1, INDEX_AreaD] = areaD;
+
+                                bestDArea = areaD;
                             }
-                            else if(temporaryArea == LocalAreaCapturedD)
+                            else if (areaD == bestDArea)
                             {
-                                //multiple best positions
-                                // AAAAAAHHHH
-                                //TODO
+                                // Multiple Best Positions
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_Row] = NumberOfBestDPositions;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_APos] = A_position;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_BPos] = B_position;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_CPos] = C_position;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_DPos] = D_position;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_AreaA] = areaA;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_AreaB] = areaB;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_AreaC] = areaC;
+                                BestDPositionArray[NumberOfBestDPositions, INDEX_AreaD] = areaD;
+                                NumberOfBestDPositions = NumberOfBestDPositions + 1;
+                            }
+                        }
+
+                        areaC = 0;
+                        for (int i = 0; i < NumberOfBestDPositions; i++)
+                        {
+                            areaC = areaC + BestDPositionArray[i, INDEX_AreaC];
+                        }
+
+                        areaC = areaC / NumberOfBestDPositions;
+
+                        if (areaC > bestCArea)
+                        {
+                            Array.Clear(BestCPositionArray, 0, BestCPositionArray.Length);
+                            NumberOfBestCPositions = 1;
+
+                            for (int i = 0; i < NumberOfBestDPositions; i++)
+                            {
+                                BestCPositionArray[i, INDEX_Row] = i + 1;
+                                BestCPositionArray[i, INDEX_APos] = BestDPositionArray[i, INDEX_APos];
+                                BestCPositionArray[i, INDEX_BPos] = BestDPositionArray[i, INDEX_BPos];
+                                BestCPositionArray[i, INDEX_CPos] = BestDPositionArray[i, INDEX_CPos];
+                                BestCPositionArray[i, INDEX_DPos] = BestDPositionArray[i, INDEX_DPos];
+                                BestCPositionArray[i, INDEX_AreaA] = BestDPositionArray[i, INDEX_AreaA];
+                                BestCPositionArray[i, INDEX_AreaB] = BestDPositionArray[i, INDEX_AreaB];
+                                BestCPositionArray[i, INDEX_AreaC] = BestDPositionArray[i, INDEX_AreaC];
+                                BestCPositionArray[i, INDEX_AreaD] = BestDPositionArray[i, INDEX_AreaD];
+                                RowsC = i + 1;
                             }
 
+                            bestCArea = areaC;
+
                         }
-
-                        // Given the A, B, C, D, positions find the captured area for C
-                        temporaryArea = FindArea(3, A_pos, B_pos, C_pos, LocalBestDPos);
-
-                        if (temporaryArea > LocalAreaCapturedC)
+                        else if (areaC == bestCArea)
                         {
-                            LocalAreaCapturedC = temporaryArea;
-                            LocalBestCPos = C_pos;
-
-                            areaCapturedDLevel3 = LocalAreaCapturedD;
-                            bestDPosLevel3 = LocalBestDPos;
-
+                            // Multiple Best Positions
+                            for (int i = RowsC; i < NumberOfBestCPositions; i++)
+                            {
+                                for(int j = 0; j < NumberOfBestDPositions; j++)
+                                {
+                                    BestCPositionArray[i + j, INDEX_Row] = i + 1;
+                                    BestCPositionArray[i + j, INDEX_APos] = BestDPositionArray[j, INDEX_APos];
+                                    BestCPositionArray[i + j, INDEX_BPos] = BestDPositionArray[j, INDEX_BPos];
+                                    BestCPositionArray[i + j, INDEX_CPos] = BestDPositionArray[j, INDEX_CPos];
+                                    BestCPositionArray[i + j, INDEX_DPos] = BestDPositionArray[j, INDEX_DPos];
+                                    BestCPositionArray[i + j, INDEX_AreaA] = BestDPositionArray[j, INDEX_AreaA];
+                                    BestCPositionArray[i + j, INDEX_AreaB] = BestDPositionArray[j, INDEX_AreaB];
+                                    BestCPositionArray[i + j, INDEX_AreaC] = BestDPositionArray[j, INDEX_AreaC];
+                                    BestCPositionArray[i + j, INDEX_AreaD] = BestDPositionArray[j, INDEX_AreaD];
+                                    RowsC = RowsC + 1;
+                                }
+                                
+                            }
+                            NumberOfBestCPositions = NumberOfBestCPositions + 1;
                         }
-                        else if (temporaryArea == LocalAreaCapturedC)
-                        {
-                            //multiple best positions
-                            // AAAAAAHHHHH
-                            //TODO
-                        }
-
-
                     }
 
-                    // Given the A, B, C, D, positions find the captured area for B
-                    temporaryArea = FindArea(2, A_pos, B_pos, LocalBestCPos, bestDPosLevel3);
+                    NumberOfBestCPositions = RowsC;
 
-                    if (temporaryArea > LocalAreaCapturedB)
+                    areaB = 0;
+                    for (int i = 0; i < NumberOfBestCPositions; i++)
                     {
-                        LocalAreaCapturedB = temporaryArea;
-                        LocalBestBPos = B_pos;
-
-                        areaCapturedCLevel2 = LocalAreaCapturedC;
-                        bestCPosLevel2 = LocalBestCPos;
-
-                        areaCapturedDLevel2 = areaCapturedDLevel3;
-                        bestDPosLevel2 = bestDPosLevel3;
-
+                        areaB = areaB + BestCPositionArray[i, INDEX_AreaB];
                     }
-                    else if (temporaryArea == LocalAreaCapturedC)
+
+                    areaB = areaB / NumberOfBestCPositions;
+
+                    if (areaB > bestBArea)
                     {
-                        //multiple best positions
-                        // AAAAAAHHHHH
-                        //TODO
-                    }
+                        Array.Clear(BestBPositionArray, 0, BestBPositionArray.Length);
+                        NumberOfBestBPositions = 1;
 
+                        for (int i = 0; i < NumberOfBestCPositions; i++)
+                        {
+                            BestBPositionArray[i, INDEX_Row] = i;
+                            BestBPositionArray[i, INDEX_APos] = BestCPositionArray[i, INDEX_APos];
+                            BestBPositionArray[i, INDEX_BPos] = BestCPositionArray[i, INDEX_BPos];
+                            BestBPositionArray[i, INDEX_CPos] = BestCPositionArray[i, INDEX_CPos];
+                            BestBPositionArray[i, INDEX_DPos] = BestCPositionArray[i, INDEX_DPos];
+                            BestBPositionArray[i, INDEX_AreaA] = BestCPositionArray[i, INDEX_AreaA];
+                            BestBPositionArray[i, INDEX_AreaB] = BestCPositionArray[i, INDEX_AreaB];
+                            BestBPositionArray[i, INDEX_AreaC] = BestCPositionArray[i, INDEX_AreaC];
+                            BestBPositionArray[i, INDEX_AreaD] = BestCPositionArray[i, INDEX_AreaD];
+                            RowsB = i + 1;
+                        }
+
+                        bestBArea = areaB;
+
+                    }
+                    else if (areaB == bestBArea)
+                    {
+                        // Multiple Best Positions
+                        for (int i = RowsB; i < NumberOfBestBPositions; i++)
+                        {
+                            for (int j = 0; j < NumberOfBestCPositions; j++)
+                            {
+                                BestBPositionArray[i + j, INDEX_Row] = i + 1;
+                                BestBPositionArray[i + j, INDEX_APos] = BestCPositionArray[j, INDEX_APos];
+                                BestBPositionArray[i + j, INDEX_BPos] = BestCPositionArray[j, INDEX_BPos];
+                                BestBPositionArray[i + j, INDEX_CPos] = BestCPositionArray[j, INDEX_CPos];
+                                BestBPositionArray[i + j, INDEX_DPos] = BestCPositionArray[j, INDEX_DPos];
+                                BestBPositionArray[i + j, INDEX_AreaA] = BestCPositionArray[j, INDEX_AreaA];
+                                BestBPositionArray[i + j, INDEX_AreaB] = BestCPositionArray[j, INDEX_AreaB];
+                                BestBPositionArray[i + j, INDEX_AreaC] = BestCPositionArray[j, INDEX_AreaC];
+                                BestBPositionArray[i + j, INDEX_AreaD] = BestCPositionArray[j, INDEX_AreaD];
+                                RowsB = RowsB + 1;
+                            }
+
+                        }
+                        NumberOfBestBPositions = NumberOfBestBPositions + 1;
+                    }
                 }
 
-                // Given the A, B, C, D, positions find the captured area for A
-                temporaryArea = FindArea(1, A_pos, LocalBestBPos, bestCPosLevel2, bestDPosLevel2);
+                NumberOfBestBPositions = RowsB;
 
-                if (temporaryArea > areaCapturedA)
+                areaA = 0;
+                for (int i = 0; i < NumberOfBestBPositions; i++)
                 {
-                    areaCapturedA = temporaryArea;
-                    bestAPos = A_pos;
+                    areaA = areaA + BestBPositionArray[i, INDEX_AreaA];
+                }
 
-                    areaCapturedB = LocalAreaCapturedB;
-                    bestBPos = LocalBestBPos;
+                areaA = areaA / NumberOfBestBPositions;
 
-                    areaCapturedC = areaCapturedCLevel2;
-                    bestCPos = bestCPosLevel2;
+                if (areaA > bestAArea)
+                {
+                    Array.Clear(BestAPositionArray, 0, BestAPositionArray.Length);
+                    NumberOfBestAPositions = 1;
 
-                    areaCapturedD = areaCapturedDLevel2;
-                    bestDPos = bestDPosLevel2;
+                    for (int i = 0; i < NumberOfBestBPositions; i++)
+                    {
+                        BestAPositionArray[i, INDEX_Row] = i;
+                        BestAPositionArray[i, INDEX_APos] = BestBPositionArray[i, INDEX_APos];
+                        BestAPositionArray[i, INDEX_BPos] = BestBPositionArray[i, INDEX_BPos];
+                        BestAPositionArray[i, INDEX_CPos] = BestBPositionArray[i, INDEX_CPos];
+                        BestAPositionArray[i, INDEX_DPos] = BestBPositionArray[i, INDEX_DPos];
+                        BestAPositionArray[i, INDEX_AreaA] = BestBPositionArray[i, INDEX_AreaA];
+                        BestAPositionArray[i, INDEX_AreaB] = BestBPositionArray[i, INDEX_AreaB];
+                        BestAPositionArray[i, INDEX_AreaC] = BestBPositionArray[i, INDEX_AreaC];
+                        BestAPositionArray[i, INDEX_AreaD] = BestBPositionArray[i, INDEX_AreaD];
+                        RowsA = i + 1;
+                    }
+
+                    bestAArea = areaA;
 
                 }
-                else if (temporaryArea == LocalAreaCapturedC)
+                else if (areaA == bestAArea)
                 {
-                    // multiple best positions
-                    // For A we don't really care as there are no higher levels to impact
-                    // Let's just keep the current one as best
+                    // Multiple Best Positions
+                    for (int i = RowsA; i < NumberOfBestAPositions; i++)
+                    {
+                        for (int j = 0; j < NumberOfBestBPositions; j++)
+                        {
+                            BestAPositionArray[i + j, INDEX_Row] = i + 1;
+                            BestAPositionArray[i + j, INDEX_APos] = BestBPositionArray[j, INDEX_APos];
+                            BestAPositionArray[i + j, INDEX_BPos] = BestBPositionArray[j, INDEX_BPos];
+                            BestAPositionArray[i + j, INDEX_CPos] = BestBPositionArray[j, INDEX_CPos];
+                            BestAPositionArray[i + j, INDEX_DPos] = BestBPositionArray[j, INDEX_DPos];
+                            BestAPositionArray[i + j, INDEX_AreaA] = BestBPositionArray[j, INDEX_AreaA];
+                            BestAPositionArray[i + j, INDEX_AreaB] = BestBPositionArray[j, INDEX_AreaB];
+                            BestAPositionArray[i + j, INDEX_AreaC] = BestBPositionArray[j, INDEX_AreaC];
+                            BestAPositionArray[i + j, INDEX_AreaD] = BestBPositionArray[j, INDEX_AreaD];
+                            RowsA = RowsA + 1;
+                        }
+
+                    }
+                    NumberOfBestAPositions = NumberOfBestAPositions + 1;
                 }
 
             }
 
-            Console.WriteLine("Got it...\n");
-            Console.WriteLine("Best position is: ");
-            Console.WriteLine(bestAPos);
-            Console.WriteLine("\nWith captured area of: ");
-            Console.WriteLine(areaCapturedA);
-            Console.WriteLine("\nPositions of others are respectively (B-D): ");
-            Console.WriteLine(bestBPos);
-            Console.WriteLine(bestCPos);
-            Console.WriteLine(bestDPos);
-            Console.WriteLine("\nWith captured area of: ");
-            Console.WriteLine(areaCapturedB);
-            Console.WriteLine(areaCapturedC);
-            Console.WriteLine(areaCapturedD);
+            if(NumberOfBestAPositions == 1)
+            {
+                Console.WriteLine("One best position for Player A...");
+                Console.Write("Best position is: ");
+                Console.WriteLine(BestAPositionArray[0, INDEX_APos]);
+                Console.Write("\n");
+                Console.Write("With an expected captured area of: ");
+                Console.WriteLine(BestAPositionArray[0, INDEX_AreaA]);
+            }
+            //else
+            //{
+                Console.Write("Printing all possible best positions...");
+                Console.WriteLine(RowsA);
+                for (int i = 0; i < RowsA; i++)
+                {
+                    Console.Write("Index:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_Row]);
+                    Console.Write("APos:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_APos]);
+                    Console.Write("BPos:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_BPos]);
+                    Console.Write("CPos:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_CPos]);
+                    Console.Write("DPos:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_DPos]);
+                    Console.Write("AreaA:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaA]);
+                    Console.Write("AreaB:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaB]);
+                    Console.Write("AreaC:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaC]);
+                    Console.Write("AreaD:");
+                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaD]);
+
+                    Console.WriteLine("\n");
+                }
+            //}
+
         }
 
 
