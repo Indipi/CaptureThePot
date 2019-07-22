@@ -24,15 +24,15 @@ namespace CaptureThePot
 
             // for 4 players using a resolution of 0 to 100 should be sufficient
 
-            int A_position; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
-            int B_position; // position of B, number between 0 - 100
-            int C_position; // position of C, number between 0 - 100
-            int D_position; // position of D, number between 0 - 100
+            double A_position; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
+            double B_position; // position of B, number between 0 - 100
+            double C_position; // position of C, number between 0 - 100
+            double D_position; // position of D, number between 0 - 100
 
-            int areaA;
-            int areaB;
-            int areaC;
-            int areaD;
+            double areaA;
+            double areaB;
+            double areaC;
+            double areaD;
 
             const int INDEX_Row = 0;
             const int INDEX_APos = 1;
@@ -44,15 +44,15 @@ namespace CaptureThePot
             const int INDEX_AreaC = 7;
             const int INDEX_AreaD = 8;
 
-            int bestAArea = 0;
-            int[,] BestAPositionArray = new int[1000, 9];
+            double bestAArea = 0;
+            double[,] BestAPositionArray = new double[1000, 9];
             int NumberOfBestAPositions = 1;
             int RowsA = 1;
 
             for (A_position = 0; A_position <= 50; A_position++)
             {
-                int bestBArea = 0;
-                int[,] BestBPositionArray = new int[10000, 9];
+                double bestBArea = 0;
+                double[,] BestBPositionArray = new double[10000, 9];
                 int NumberOfBestBPositions = 1;
                 int RowsB = 1;
 
@@ -67,8 +67,8 @@ namespace CaptureThePot
                         continue;
                     }
 
-                    int bestCArea = 0;
-                    int[,] BestCPositionArray = new int[1000, 9];
+                    double bestCArea = 0;
+                    double[,] BestCPositionArray = new double[1000, 9];
                     int NumberOfBestCPositions = 1;
                     int RowsC = 1;
 
@@ -83,8 +83,8 @@ namespace CaptureThePot
                             continue;
                         }
 
-                        int bestDArea = 0;
-                        int[,] BestDPositionArray = new int[101, 9];
+                        double bestDArea = 0;
+                        double[,] BestDPositionArray = new double[101, 9];
                         int NumberOfBestDPositions = 1;
 
                         for (D_position = 0; D_position <= 100; D_position++)
@@ -317,7 +317,7 @@ namespace CaptureThePot
                 Console.Write("Number of possible positions: ");
                 Console.WriteLine(NumberOfBestAPositions);
                 Console.WriteLine("Printing all possible best A positions...");
-                int uniqueAPos = 0;
+                double uniqueAPos = 0;
 
                 Console.WriteLine("Best positions are: ");
                 for (int i = 0; i < RowsA; i++)
@@ -363,16 +363,16 @@ namespace CaptureThePot
 
 
         //This function takes a player and 4 positions (non-ordered) and returns the captured area for that player
-        static int FindArea(int player, int pos1, int pos2, int pos3, int pos4)
+        static double FindArea(int player, double pos1, double pos2, double pos3, double pos4)
         {
             // player is 1, 2, 3, or 4 and refers to the player whose area we want to know
             // Player n is at posn
 
-            int area = 0;
+            double area = 0;
 
-            int[] arr = new int[] {pos1, pos2, pos3, pos4};
+            double[] arr = new double[] {pos1, pos2, pos3, pos4};
 
-            int position = arr[player - 1];
+            double position = arr[player - 1];
 
             // Sort array in ascending order. 
             Array.Sort(arr);
