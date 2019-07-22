@@ -24,15 +24,15 @@ namespace CaptureThePot
 
             // for 4 players using a resolution of 0 to 100 should be sufficient
 
-            int A_position = 0; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
-            int B_position = 0; // position of B, number between 0 - 100
-            int C_position = 0; // position of C, number between 0 - 100
-            int D_position = 0; // position of D, number between 0 - 100
+            int A_position; // position of A, number between 0 - 50 (Symmetrical game so only need to test half)
+            int B_position; // position of B, number between 0 - 100
+            int C_position; // position of C, number between 0 - 100
+            int D_position; // position of D, number between 0 - 100
 
-            int areaA = 0;
-            int areaB = 0;
-            int areaC = 0;
-            int areaD = 0;
+            int areaA;
+            int areaB;
+            int areaC;
+            int areaD;
 
             const int INDEX_Row = 0;
             const int INDEX_APos = 1;
@@ -55,6 +55,10 @@ namespace CaptureThePot
                 int[,] BestBPositionArray = new int[10000, 9];
                 int NumberOfBestBPositions = 1;
                 int RowsB = 1;
+
+                Console.Clear();
+                Console.WriteLine("Thinking...");
+                Console.WriteLine(50 - A_position);
 
                 for (B_position = 0; B_position <= 100; B_position++)
                 {
@@ -300,37 +304,60 @@ namespace CaptureThePot
                 Console.Write("Best position is: ");
                 Console.WriteLine(BestAPositionArray[0, INDEX_APos]);
                 Console.Write("\n");
+
                 Console.Write("With an expected captured area of: ");
-                Console.WriteLine(BestAPositionArray[0, INDEX_AreaA]);
+                Console.Write(bestAArea);
+                Console.WriteLine("\n");
+
+                Console.WriteLine("Note: Mirrored positions work equally well");
+
             }
             else
             {
-                Console.Write("Printing all possible best positions...");
-                Console.WriteLine(RowsA);
+                Console.Write("Number of possible positions: ");
+                Console.WriteLine(NumberOfBestAPositions);
+                Console.WriteLine("Printing all possible best A positions...");
+                int uniqueAPos = 0;
+
+                Console.WriteLine("Best positions are: ");
                 for (int i = 0; i < RowsA; i++)
                 {
-                    Console.Write("Index:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_Row]);
-                    Console.Write("APos:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_APos]);
-                    Console.Write("BPos:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_BPos]);
-                    Console.Write("CPos:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_CPos]);
-                    Console.Write("DPos:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_DPos]);
-                    Console.Write("AreaA:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaA]);
-                    Console.Write("AreaB:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaB]);
-                    Console.Write("AreaC:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaC]);
-                    Console.Write("AreaD:");
-                    Console.WriteLine(BestAPositionArray[i, INDEX_AreaD]);
-
-                    Console.WriteLine("\n");
+                    if(uniqueAPos != BestAPositionArray[i, INDEX_APos])
+                    {
+                        Console.WriteLine(BestAPositionArray[i, INDEX_APos]);
+                        uniqueAPos = BestAPositionArray[i, INDEX_APos];
+                    }
                 }
+
+                Console.Write("With an expected captured area of: ");
+                Console.Write(bestAArea);
+                Console.WriteLine("\n");
+
             }
+
+
+            //If print all positions
+            /*Console.Write("Index:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_Row]);
+            Console.Write("APos:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_APos]);
+            Console.Write("BPos:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_BPos]);
+            Console.Write("CPos:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_CPos]);
+            Console.Write("DPos:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_DPos]);
+            Console.Write("AreaA:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_AreaA]);
+            Console.Write("AreaB:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_AreaB]);
+            Console.Write("AreaC:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_AreaC]);
+            Console.Write("AreaD:");
+            Console.WriteLine(BestAPositionArray[i, INDEX_AreaD]);
+
+            Console.WriteLine("\n");
+            */
 
         }
 
