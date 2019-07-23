@@ -39,9 +39,10 @@ namespace CaptureThePot
             // for 4 players using a resolution of 0 to 100 should be sufficient
 
             // Problem specifies any real number between 0 and 1. This program selects an integer for each player (saved as type double) between 0 and the RESOLUTION
-            // The higher the resolution the more accurate the output however the longer the program will take.
+            // The higher the resolution the longer the program will take. A very low resolution will mean reduced precision. 
+            // Beyond a certain resolution threshold the precision is more dependant on the divisibility of the resolution number relative to the number of players.
             // Before printing the program converts the answer back so it lies at the correct position between 0 and 1.
-            const int RESOLUTION = 100;
+            const int RESOLUTION = 60;
 
             double A_position; // position of A, number between 0 - RESOLUTION / 2 (Symmetrical game so only need to test half - note at end specifies mirrored positions also work)
             double B_position; // position of B, number between 0 - RESOLUTION
@@ -60,7 +61,7 @@ namespace CaptureThePot
 
                 Console.Clear();
                 Console.WriteLine("Thinking...");
-                Console.WriteLine((RESOLUTION / 2) - A_position);
+                Console.WriteLine((RESOLUTION / 2) - A_position); // Prints a countdown
 
                 for (B_position = 0; B_position <= RESOLUTION; B_position++)
                 {
@@ -75,11 +76,7 @@ namespace CaptureThePot
 
                     for (C_position = 0; C_position <= RESOLUTION; C_position++)
                     {
-                        if (C_position == A_position)
-                        {
-                            continue;
-                        }
-                        if (C_position == B_position)
+                        if ((C_position == A_position) || (C_position == B_position))
                         {
                             continue;
                         }
@@ -91,30 +88,18 @@ namespace CaptureThePot
 
                         for (D_position = 0; D_position <= RESOLUTION; D_position++)
                         {
-                            if (D_position == A_position)
-                            {
-                                continue;
-                            }
-                            if (D_position == B_position)
-                            {
-                                continue;
-                            }
-                            if (D_position == C_position)
+                            if ((D_position == A_position) || (D_position == B_position) || (D_position == C_position))
                             {
                                 continue;
                             }
 
                             double areaD = FindArea(4, A_position, B_position, C_position, D_position, RESOLUTION);
 
-                            Position position = new Position();
-                            position.A_Position = A_position;
-                            position.B_Position = B_position;
-                            position.C_Position = C_position;
-                            position.D_Position = D_position;
-                            position.A_Area = FindArea(1, A_position, B_position, C_position, D_position, RESOLUTION);
-                            position.B_Area = FindArea(2, A_position, B_position, C_position, D_position, RESOLUTION);
-                            position.C_Area = FindArea(3, A_position, B_position, C_position, D_position, RESOLUTION);
-                            position.D_Area = areaD;
+                            Position position = new Position{ A_Position = A_position, B_Position = B_position, C_Position = C_position, D_Position = D_position,
+                                A_Area = FindArea(1, A_position, B_position, C_position, D_position, RESOLUTION),
+                                B_Area = FindArea(2, A_position, B_position, C_position, D_position, RESOLUTION),
+                                C_Area = FindArea(3, A_position, B_position, C_position, D_position, RESOLUTION),
+                                D_Area = areaD };
 
                             if (areaD > bestDArea)
                             {
@@ -227,10 +212,10 @@ namespace CaptureThePot
                 }
             }
 
-            Console.Write("Number of possible positions: ");
+            Console.Clear();
+            Console.WriteLine("Number of possible positions (from 0 to 0.5 inclusive): \n");
             Console.WriteLine(countPosA);
-            Console.WriteLine("Printing all possible best A positions...");
-            Console.WriteLine("Best position(s) are: ");
+            Console.WriteLine("\n\nBest position(s) are: \n");
 
             uniqueAPos = 0;
             foreach (Position p in Best_A_Position_List)
@@ -243,15 +228,65 @@ namespace CaptureThePot
                 }
             }
 
-            Console.Write("With an expected captured area of: ");
-            Console.Write((bestAArea) / RESOLUTION);
-            Console.WriteLine("\n");
+            Console.WriteLine("\n\nWith an expected chance of winning of: \n");
+            Console.WriteLine(((bestAArea) / RESOLUTION) * 100 + " %");
 
-            Console.WriteLine("Note: Mirrored positions also work equally well");
+            Console.WriteLine("\n\nNote: Mirrored positions also work equally well. ");
+            Console.WriteLine("i.e. 1 - minus the above position is also a valid position.");
+            Console.WriteLine("So unless the given answer is exactly 0.5 there are alwyas at least two solutions.");
 
-            // Have left the below code in for debugging purposes
-            /*Console.Write("Printing all positions... ");
-            foreach (Position p in Best_A_Position_List)
+            Console.WriteLine("\n\n");
+
+            // Below function prints entire list of positions for A
+            // Commented out as is used for debugging purposes
+            //PrintAllPositions(Best_A_Position_List, RESOLUTION);
+
+
+        }
+
+
+        //This function takes a player and 4 positions (non-ordered) and returns the captured area for that player
+        static double FindArea(int player, double pos1, double pos2, double pos3, double pos4, int RESOLUTION)
+        {
+            // player is 1, 2, 3, or 4 and refers to the player whose area we want to know
+            // Player n is at position
+
+            double[] array_of_positions = new double[] {pos1, pos2, pos3, pos4};
+
+            double position = array_of_positions[player - 1];
+
+            // Sort array in ascending order. 
+            Array.Sort(array_of_positions);
+
+            // Get index of the player position
+            int position_index = Array.IndexOf(array_of_positions, position);
+
+            // Area calculation depends on index 
+            double area;
+            if (position_index == 0)
+            {
+                area = array_of_positions[position_index] + ((array_of_positions[position_index + 1] - array_of_positions[position_index]) / 2);
+            }
+            else if(position_index == 3)
+            {
+                area = (RESOLUTION - array_of_positions[position_index]) + ((array_of_positions[position_index] - array_of_positions[position_index - 1]) / 2);
+            }
+            else
+            {
+                area = ((array_of_positions[position_index] - array_of_positions[position_index - 1]) / 2) + ((array_of_positions[position_index + 1] - array_of_positions[position_index]) / 2);
+            }
+
+            return area;
+
+        }
+
+
+        // The following function will print all positions in a list
+        // Used for debugging purposes
+        static void PrintAllPositions(List<Position> list_of_positions, int RESOLUTION)
+        {
+            Console.Write("Printing all positions... ");
+            foreach (Position p in list_of_positions)
             {
                 Console.Write("\nPosition A: ");
                 Console.Write(p.A_Position / RESOLUTION);
@@ -269,48 +304,8 @@ namespace CaptureThePot
                 Console.Write(p.C_Area / RESOLUTION);
                 Console.Write("\nArea D: ");
                 Console.Write(p.D_Area / RESOLUTION);
+                Console.WriteLine("\n");
             }
-            */
-
-        }
-
-
-        //This function takes a player and 4 positions (non-ordered) and returns the captured area for that player
-        static double FindArea(int player, double pos1, double pos2, double pos3, double pos4, int RESOLUTION)
-        {
-            // player is 1, 2, 3, or 4 and refers to the player whose area we want to know
-            // Player n is at posn
-
-            double area = 0;
-
-            double[] arr = new double[] {pos1, pos2, pos3, pos4};
-
-            double position = arr[player - 1];
-
-            // Sort array in ascending order. 
-            Array.Sort(arr);
-
-            for(int i = 0; i < 4; i++)
-            {
-                if(position == arr[i])
-                {
-                    if(i == 0)
-                    {
-                        area = arr[i] + ((arr[i + 1] - arr[i]) / 2);
-                    }
-                    else if(i == 3)
-                    {
-                        area = (RESOLUTION - arr[i]) + ((arr[i] - arr[i - 1]) / 2);
-                    }
-                    else
-                    {
-                        area = ((arr[i] - arr[i - 1]) / 2) + ((arr[i + 1] - arr[i]) / 2);
-                    }
-                }
-            }
-
-            return area;
-
         }
 
 
