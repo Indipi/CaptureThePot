@@ -36,7 +36,11 @@ namespace CaptureThePot
 
             Console.WriteLine("Thinking...");
 
-            // for 4 players using a resolution of 0 to 100 should be sufficient
+            // This code uses a brute force method to check every position.
+            // It must confirm that the later players have selected optimal choices then pass the optimal choice
+            // back up to previous player. E.g. for a given A selection the inner loops get the optimnal posistions for players B, C, D
+            // then A can compare with previous selections if this is the best choice for A.
+            // For several equally optimal options we use the expected value as a measure of captured area.
 
             // Problem specifies any real number between 0 and 1. This program selects an integer for each player (saved as type double) between 0 and the RESOLUTION
             // The higher the resolution the longer the program will take. A very low resolution will mean reduced precision. 
